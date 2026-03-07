@@ -68,7 +68,6 @@ func getUsers(c *gin.Context) {
 }
 
 func createUser(c *gin.Context) {
-
 	var newUser User
 
 	c.BindJSON(&newUser)
@@ -77,3 +76,6 @@ func createUser(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, newUser)
 }
+
+
+arr:=int{1,2,0,8,4,56,0,90,74,0}
