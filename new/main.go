@@ -40,14 +40,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Product struct {
-	ID   string `json:"id"`
+type User struct {
+	ID   int    `json:"id"`
 	Name string `json:"name"`
 }
 
-var products = []Product{
-	{ID: "1", Name: "Laptop"},
-	{ID: "2", Name: "Phone"},
+var users = []User{
+	{ID: 1, Name: "Hashin"},
+	{ID: 2, Name: "Rahul"},
 }
 
 func main() {
@@ -56,40 +56,24 @@ func main() {
 
 	api := router.Group("/api")
 	{
-		api.GET("/products", getProducts)
-		api.GET("/products/:id", getProduct)
-		api.POST("/products", createProduct)
+		api.GET("/users", getUsers)
+		api.POST("/users", createUser)
 	}
 
 	router.Run(":8080")
 }
 
-func getProducts(c *gin.Context) {
-	c.JSON(http.StatusOK, products)
+func getUsers(c *gin.Context) {
+	c.JSON(http.StatusOK, users)
 }
 
-func getProduct(c *gin.Context) {
+func createUser(c *gin.Context) {
 
-	id := c.Param("id")
+	var newUser User
 
-	for _, p := range products {
-		if p.ID == id {
-			c.JSON(http.StatusOK, p)
-			return
-		}
-	}
+	c.BindJSON(&newUser)
 
-	c.JSON(http.StatusNotFound, gin.H{
-		"error": "Product not found",
-	})
-}
+	users = append(users, newUser)
 
-func createProduct(c *gin.Context) {
-	var newProduct Product
-
-	c.BindJSON(&newProduct)
-
-	products = append(products, newProduct)
-
-	c.JSON(http.StatusCreated, newProduct)
+	c.JSON(http.StatusCreated, newUser)
 }
