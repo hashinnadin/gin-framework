@@ -1,37 +1,3 @@
-// package main
-
-// import (
-// 	"net/http"
-
-// 	"github.com/gin-gonic/gin"
-// )
-
-// type Product struct {
-// 	ID   string `json:"id"`
-// 	Name string `json:"name"`
-// }
-
-// var products = []Product{
-// 	{ID: "1", Name: "Laptop"},
-// 	{ID: "2", Name: "Bike"},
-// }
-
-// func main() {
-
-// 	router := gin.Default()
-
-// 	api := router.Group("/api")
-// 	{
-// 		api.GET("/products", getProducts)
-// 		// api.GET("/products/:id")
-// 		// api.POST("/products")
-// 	}
-// 	router.Run(":8080")
-// }
-// func getProducts(c *gin.Context) {
-// 	c.JSON(http.StatusOK, products)
-// }
-
 package main
 
 import (
@@ -68,6 +34,7 @@ func getUsers(c *gin.Context) {
 }
 
 func createUser(c *gin.Context) {
+
 	var newUser User
 
 	c.BindJSON(&newUser)
