@@ -220,6 +220,9 @@ func loginHandler(c *gin.Context) {
 			"message": "login successful",
 		})
 		return
+	} else if data.Username == "" || data.Password == "" {
+		c.JSON(400, gin.H{"erro": "invalid json"})
+		return
 	}
 
 	c.JSON(http.StatusUnauthorized, gin.H{
