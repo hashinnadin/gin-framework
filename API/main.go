@@ -169,112 +169,131 @@
 // 	c.JSON(http.StatusOK, gin.H{
 // 		"message": "logout endpoint",
 // 	})
+
+// package main
+
+// import (
+// 	"fmt"
+// 	"net/http"
+
+// 	"github.com/gin-gonic/gin"
+// )
+
+// const USERNAME = "admin"
+// const PASSWORD = "1234"
+
+// func main() {
+
+// 	router := gin.Default()
+
+// 	// login & logout with logging middleware
+// 	router.POST("/login", LoggingMiddleware(), loginHandler)
+// 	router.GET("/logout", LoggingMiddleware(), logoutHandler)
+
+// 	// protected route
+// 	router.GET("/profile", AuthMiddleware(), profileHandler)
+
+// 	router.Run(":8080")
+// }
+
+// func loginHandler(c *gin.Context) {
+
+// 	var data struct {
+// 		Username string `json:"username"`
+// 		Password string `json:"password"`
+// 	}
+
+// 	if err := c.ShouldBindJSON(&data); err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{
+// 			"error": "invalid request",
+// 		})
+// 		return
+// 	}
+
+// 	if data.Username == USERNAME && data.Password == PASSWORD {
+
+// 		// set session cookie
+// 		c.SetCookie("session", "loggedin", 3600, "/", "localhost", false, true)
+
+// 		c.JSON(http.StatusOK, gin.H{
+// 			"message": "login successful",
+// 		})
+// 		return
+// 	} else if data.Username == "" || data.Password == "" {
+// 		c.JSON(400, gin.H{"erro": "invalid json"})
+// 		return
+// 	}
+
+// 	c.JSON(http.StatusUnauthorized, gin.H{
+// 		"error": "invalid username or password",
+// 	})
+// }
+
+// func logoutHandler(c *gin.Context) {
+
+// 	// delete session cookie
+// 	c.SetCookie("session", "", -1, "/", "localhost", false, true)
+
+// 	c.JSON(http.StatusOK, gin.H{
+// 		"message": "logged out successfully",
+// 	})
+// }
+
+// func profileHandler(c *gin.Context) {
+
+// 	c.JSON(http.StatusOK, gin.H{
+// 		"message": "welcome to protected profile",
+// 	})
+// }
+
+// // Logging Middleware
+// func LoggingMiddleware() gin.HandlerFunc {
+
+// 	return func(c *gin.Context) {
+
+// 		fmt.Println("Request:", c.Request.Method, c.Request.URL.Path)
+
+// 		c.Next()
+// 	}
+// }
+
+// // Authentication Middleware
+// func AuthMiddleware() gin.HandlerFunc {
+
+// 	return func(c *gin.Context) {
+
+// 		session, err := c.Cookie("session")
+
+// 		if err != nil || session != "loggedin" {
+
+// 			c.JSON(http.StatusUnauthorized, gin.H{
+// 				"error": "login required",
+// 			})
+
+// 			c.Abort()
+// 			return
+// 		}
+
+// 		c.Next()
+// 	}
 // }
 
 package main
 
 import (
 	"fmt"
-	"net/http"
 
-	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 )
-
-const USERNAME = "admin"
-const PASSWORD = "1234"
 
 func main() {
 
-	router := gin.Default()
+	password := "1238"
 
-	// login & logout with logging middleware
-	router.POST("/login", LoggingMiddleware(), loginHandler)
-	router.GET("/logout", LoggingMiddleware(), logoutHandler)
-
-	// protected route
-	router.GET("/profile", AuthMiddleware(), profileHandler)
-
-	router.Run(":8080")
-}
-
-func loginHandler(c *gin.Context) {
-
-	var data struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		panic(err)
 	}
 
-	if err := c.ShouldBindJSON(&data); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid request",
-		})
-		return
-	}
-
-	if data.Username == USERNAME && data.Password == PASSWORD {
-
-		// set session cookie
-		c.SetCookie("session", "loggedin", 3600, "/", "localhost", false, true)
-
-		c.JSON(http.StatusOK, gin.H{
-			"message": "login successful",
-		})
-		return
-	} else if data.Username == "" || data.Password == "" {
-		c.JSON(400, gin.H{"erro": "invalid json"})
-		return
-	}
-
-	c.JSON(http.StatusUnauthorized, gin.H{
-		"error": "invalid username or password",
-	})
-}
-
-func logoutHandler(c *gin.Context) {
-
-	// delete session cookie
-	c.SetCookie("session", "", -1, "/", "localhost", false, true)
-
-	c.JSON(http.StatusOK, gin.H{
-		"message": "logged out successfully",
-	})
-}
-
-func profileHandler(c *gin.Context) {
-
-	c.JSON(http.StatusOK, gin.H{
-		"message": "welcome to protected profile",
-	})
-}
-
-// Logging Middleware
-func LoggingMiddleware() gin.HandlerFunc {
-
-	return func(c *gin.Context) {
-
-		fmt.Println("Request:", c.Request.Method, c.Request.URL.Path)
-
-		c.Next()
-	}
-}
-
-// Authentication Middleware
-func AuthMiddleware() gin.HandlerFunc {
-
-	return func(c *gin.Context) {
-
-		session, err := c.Cookie("session")
-
-		if err != nil || session != "loggedin" {
-
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"error": "login required",
-			})
-
-			c.Abort()
-			return
-		}
-
-		c.Next()
-	}
+	fmt.Println("Hashed password:", string(hash))
 }
