@@ -154,7 +154,12 @@
 
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
+)
+
+var user = map[string]string{}
 
 func main() {
 	r := gin.Default()
@@ -164,4 +169,24 @@ func main() {
 		})
 	})
 	r.Run(":7070")
+}
+func register(c *gin.Context) {
+
+	var data struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+
+	c.ShouldBindJSON(&data)
+
+	hash, _ := bcrypt.GenerateFromPassword(
+		[]byte(data.Password),
+		bcrypt.DefaultCost,
+	)
+
+	user[data.Username] = string(hash)
+
+	c.JSON(200, gin.H{
+		"message": "user registered",
+	})
 }
