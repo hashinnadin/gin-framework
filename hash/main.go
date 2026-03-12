@@ -149,44 +149,33 @@
 // 	c.JSON(200, gin.H{
 // 		"message": "hello hashin",
 // 	})
-
 // }
 
 package main
 
-import (
-	"github.com/gin-gonic/gin"
-	"golang.org/x/crypto/bcrypt"
-)
+import "github.com/gin-gonic/gin"
 
-var user = map[string]string{}
+type Data struct {
+	Data string `json:"message"`
+}
 
 func main() {
+
 	r := gin.Default()
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "server running",
-		})
-	})
-	r.Run(":7070")
+	r.GET("/", hello)
+	r.POST("/", helloPost)
+	r.Run(":8080")
 }
-func register(c *gin.Context) {
 
-	var data struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
-	}
-
-	c.ShouldBindJSON(&data)
-
-	hash, _ := bcrypt.GenerateFromPassword(
-		[]byte(data.Password),
-		bcrypt.DefaultCost,
-	)
-
-	user[data.Username] = string(hash)
-
+func helloPost(c *gin.Context) {
+	var mes Data
+	c.BindJSON(&mes)
 	c.JSON(200, gin.H{
-		"message": "user registered",
+		"message": mes.Data,
+	})
+}
+func hello(c *gin.Context) {
+	c.JSON(200, gin.H{
+		"message": "hello hashin",
 	})
 }
