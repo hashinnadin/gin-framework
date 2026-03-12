@@ -112,32 +112,56 @@
 
 // 		c.Next()
 // 	}
+// // }
+
+// package main
+
+// import "github.com/gin-gonic/gin"
+
+// type User struct {
+// 	Username string `json:"name"`
+// 	Age      int    `json:"age"`
+// }
+
+// func main() {
+// 	router := gin.Default()
+
+// 	router.GET("/hello", hello)
+// 	router.POST("hello", postHello)
+// 	router.Run(":8080")
+// }
+
+// func postHello(c *gin.Context) {
+// 	var user User
+// 	err := c.ShouldBindJSON(&user)
+// 	if err != nil {
+// 		c.JSON(400, gin.H{
+// 			"error": "invalid json",
+// 		})
+// 		return
+// 	}
+// 	c.JSON(200, gin.H{
+// 		"name": user.Username,
+// 		"age":  user.Age,
+// 	})
+// }
+// func hello(c *gin.Context) {
+// 	c.JSON(200, gin.H{
+// 		"message": "hello hashin",
+// 	})
+
 // }
 
 package main
 
 import "github.com/gin-gonic/gin"
 
-func setSession(c *gin.Context) {
-	c.SetCookie("session_id", "abc123", 3600, "/", "localhost", false, true)
-
-	c.JSON(200, gin.H{
-		"message": "session created",
-	})
-}
-
-func getSession(c *gin.Context) {
-
-	session, err := c.Cookie("session_id")
-
-	if err != nil {
-		c.JSON(401, gin.H{
-			"error": "no session",
+func main() {
+	r := gin.Default()
+	r.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "server running",
 		})
-		return
-	}
-
-	c.JSON(200, gin.H{
-		"session": session,
 	})
+	r.Run(":7070")
 }
